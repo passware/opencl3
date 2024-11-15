@@ -17,9 +17,9 @@ pub use cl3::event::*;
 use super::Result;
 use libc::c_void;
 
-/// An OpenCL event object.  
+/// An OpenCL event object.
 /// Has methods to return information from calls to clGetEventInfo and
-/// clGetEventProfilingInfo with the appropriate parameters.  
+/// clGetEventProfilingInfo with the appropriate parameters.
 /// Implements the Drop trait to call release_event when the object is dropped.
 #[derive(Debug)]
 pub struct Event {
@@ -144,11 +144,12 @@ impl Event {
 mod tests {
     use super::*;
     use crate::command_queue::{CommandQueue, CL_QUEUE_PROFILING_ENABLE};
+    use crate::constants::CL_NON_BLOCKING;
     use crate::context::Context;
     use crate::device::{Device, CL_DEVICE_TYPE_GPU};
     use crate::memory::{Buffer, CL_MEM_READ_ONLY};
     use crate::platform::get_platforms;
-    use crate::types::{cl_float, CL_NON_BLOCKING};
+    use crate::types::cl_float;
     use std::ptr;
 
     extern "C" fn event_callback_function(

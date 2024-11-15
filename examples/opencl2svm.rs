@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use opencl3::command_queue::{CommandQueue, CL_QUEUE_PROFILING_ENABLE};
+use opencl3::constants::CL_BLOCKING;
 use opencl3::context::Context;
 use opencl3::device::{Device, CL_DEVICE_TYPE_GPU};
 use opencl3::error_codes::cl_int;
@@ -20,7 +21,6 @@ use opencl3::kernel::{ExecuteKernel, Kernel};
 use opencl3::memory::{CL_MAP_READ, CL_MAP_WRITE};
 use opencl3::program::{Program, CL_STD_2_0};
 use opencl3::svm::SvmVec;
-use opencl3::types::CL_BLOCKING;
 use opencl3::Result;
 
 const PROGRAM_SOURCE: &str = r#"

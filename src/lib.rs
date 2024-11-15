@@ -23,9 +23,9 @@
 //! # Description
 //!
 //! This crate provides a relatively simple, object based model of the OpenCL 3.0
-//! [API](https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html).  
+//! [API](https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html).
 //! It is built upon the [cl3](https://crates.io/crates/cl3) crate, which
-//! provides a functional interface to the OpenCL API.  
+//! provides a functional interface to the OpenCL API.
 //!
 //! **OpenCL** (Open Computing Language) is framework for general purpose
 //! parallel programming across heterogeneous devices including: CPUs, GPUs,
@@ -40,7 +40,7 @@
 //! has evolved over time and not all device vendors support all OpenCL features.
 //!
 //! [OpenCL 3.0](https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html)
-//! is a unified specification that adds little new functionality to previous OpenCL versions.  
+//! is a unified specification that adds little new functionality to previous OpenCL versions.
 //! It specifies that all **OpenCL 1.2** features are **mandatory**, while all
 //! OpenCL 2.x and OpenCL 3.0 features are now optional.
 //!
@@ -51,37 +51,37 @@
 //! The [OpenCL Specification](https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html#_the_opencl_architecture)
 //! considers OpenCL as four models:
 //!
-//! * **Platform Model**  
+//! * **Platform Model**
 //! The physical OpenCL hardware: a *host* containing one or more OpenCL [platform]s,
-//! each connected to one or more OpenCL [device]s.  
+//! each connected to one or more OpenCL [device]s.
 //! An OpenCL application running on the *host*, creates an OpenCL environment
 //! called a [context] on a single [platform] to process data on one or more
 //! of the OpenCL [device]s connected to the [platform].
 //!
-//! * **Programming Model**  
+//! * **Programming Model**
 //! An OpenCL [program] consists of OpenCL [kernel] functions that can run
-//! on OpenCL [device]s within a [context].  
+//! on OpenCL [device]s within a [context].
 //! OpenCL [program]s must be created (and most must be built) for a [context]
 //! before their OpenCL [kernel] functions can be created from them,
 //! the exception being "built-in" [kernel]s which don't need to be built
-//! (or compiled and linked).  
+//! (or compiled and linked).
 //! OpenCL [kernel]s are controlled by an OpenCL application that runs on the
 //! *host*, see **Execution Model**.
 //!
-//! * **Memory Model**  
+//! * **Memory Model**
 //! **OpenCL 1.2** memory is divided into two fundamental memory regions:
-//! **host memory** and **device memory**.  
+//! **host memory** and **device memory**.
 //! OpenCL [kernel]s run on **device memory**; an OpenCL application must write
 //! **host memory** to **device memory** for OpenCL [kernel]s to process.
 //! An OpenCL application must also read results from **device memory** to
-//! **host memory** after a [kernel] has completed execution.  
+//! **host memory** after a [kernel] has completed execution.
 //! **OpenCL 2.0** shared virtual memory ([svm]) is shared between the host
 //! and device(s) and synchronised by OpenCL; eliminating the explicit transfer
 //! of memory between host and device(s) memory regions.
 //!
-//! * **Execution Model**  
+//! * **Execution Model**
 //! An OpenCL application creates at least one OpenCL [command_queue] for each
-//! OpenCL [device] (or *sub-device*) within it's OpenCL [context].  
+//! OpenCL [device] (or *sub-device*) within it's OpenCL [context].
 //! OpenCL [kernel] executions and **OpenCL 1.2** memory reads and writes are
 //! "enqueued" by the OpenCL application on each [command_queue].
 //! An application can wait for all "enqueued" commands to finish on a
@@ -120,7 +120,7 @@
 //! Most example OpenCL applications just choose the first available [Platform]
 //! and [Device] for their [Context]. However, since many systems have multiple
 //! platforms and devices, the first [Platform] and [Device] are unlikely to
-//! provide the best performance.  
+//! provide the best performance.
 //! For example, on a system with an APU (combined CPU and GPU, e.g. Intel i7)
 //! and a discrete graphics card (e.g. Nvidia GTX 1070) OpenCL may find the
 //! either the integrated GPU or the GPU on the graphics card first.
@@ -140,7 +140,7 @@
 //! * [Program]
 //! * [Kernel]
 //!
-//! OpenCL [Kernel] functions are contained in OpenCL [Program]s.  
+//! OpenCL [Kernel] functions are contained in OpenCL [Program]s.
 //!
 //! Kernels are usually defined as functions in OpenCL [Program] source code,
 //! however OpenCL [Device]s may contain built-in [Kernel]s,
@@ -164,13 +164,13 @@
 //! * [SvmVec]
 //! * [Pipe]
 //!
-//! [Buffer], [Image] and [Sampler] are OpenCL 1.2 (i.e. **mandatory**) objects,  
+//! [Buffer], [Image] and [Sampler] are OpenCL 1.2 (i.e. **mandatory**) objects,
 //! [svm] and [Pipe] are are OpenCL 2.0 (i.e. optional) objects.
 //!
-//! A [Buffer] is a contiguous block of memory used for general purpose data.  
-//! An [Image] holds data for one, two or three dimensional images.  
+//! A [Buffer] is a contiguous block of memory used for general purpose data.
+//! An [Image] holds data for one, two or three dimensional images.
 //! A [Sampler] describes how a [Kernel] is to sample an [Image], see
-//! [Sampler objects](https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html#_sampler_objects).  
+//! [Sampler objects](https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html#_sampler_objects).
 //!
 //! [Shared Virtual Memory](https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html#shared-virtual-memory)
 //! enables the host and kernels executing on devices to directly share data
@@ -215,6 +215,9 @@ pub mod svm;
 
 pub mod error_codes {
     pub use cl3::error_codes::*;
+}
+pub mod constants {
+    pub use cl3::constants::*;
 }
 pub mod types {
     pub use cl3::types::*;

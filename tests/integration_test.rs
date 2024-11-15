@@ -16,13 +16,14 @@ extern crate opencl3;
 
 use cl3::device::CL_DEVICE_TYPE_GPU;
 use opencl3::command_queue::{CommandQueue, CL_QUEUE_PROFILING_ENABLE};
+use opencl3::constants::{CL_BLOCKING, CL_NON_BLOCKING};
 use opencl3::context::Context;
 use opencl3::device::Device;
 use opencl3::kernel::{ExecuteKernel, Kernel};
 use opencl3::memory::{Buffer, CL_MEM_READ_ONLY, CL_MEM_WRITE_ONLY};
 use opencl3::platform::get_platforms;
 use opencl3::program::Program;
-use opencl3::types::{cl_event, cl_float, CL_BLOCKING, CL_NON_BLOCKING};
+use opencl3::types::{cl_event, cl_float};
 use opencl3::Result;
 use std::ptr;
 

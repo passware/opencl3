@@ -151,7 +151,7 @@ impl<'a, T> SvmRawVec<'a, T> {
                     alloc::dealloc(self.ptr.cast::<u8>(), layout);
                 }
             } else {
-                unsafe { svm_free(self.context.get(), self.ptr.cast::<c_void>()) };
+                unsafe { svm_free(self.context.get(), self.ptr.cast::<c_void>())? };
             }
         }
 
@@ -175,7 +175,10 @@ impl<'a, T> Drop for SvmRawVec<'a, T> {
                     alloc::dealloc(self.ptr.cast::<u8>(), layout);
                 }
             } else {
-                unsafe { svm_free(self.context.get(), self.ptr.cast::<c_void>()) };
+                unsafe {
+                    svm_free(self.context.get(), self.ptr.cast::<c_void>())
+                        .expect("Error: clSVMFree")
+                };
             }
             self.ptr = ptr::null_mut();
         }
@@ -183,7 +186,7 @@ impl<'a, T> Drop for SvmRawVec<'a, T> {
 }
 
 /// An OpenCL Shared Virtual Memory (SVM) vector.
-/// It has the lifetime of the [Context] that it was constructed from.  
+/// It has the lifetime of the [Context] that it was constructed from.
 /// Note: T cannot be a "zero sized type" (ZST).
 ///
 /// There are three types of Shared Virtual Memory:
@@ -192,12 +195,12 @@ impl<'a, T> Drop for SvmRawVec<'a, T> {
 /// - CL_DEVICE_SVM_FINE_GRAIN_SYSTEM: individual memory objects *anywhere* in **host** memory can be shared.
 ///
 /// This `SvmVec` struct is designed to support CL_DEVICE_SVM_COARSE_GRAIN_BUFFER
-/// and CL_DEVICE_SVM_FINE_GRAIN_BUFFER.  
+/// and CL_DEVICE_SVM_FINE_GRAIN_BUFFER.
 /// A [Context] that supports CL_DEVICE_SVM_FINE_GRAIN_SYSTEM can (and should!)
 /// use a standard Rust vector instead.
 ///
 /// Intel provided an excellent overview of Shared Virtual Memory here:
-/// [OpenCL 2.0 Shared Virtual Memory Overview](https://software.intel.com/content/www/us/en/develop/articles/opencl-20-shared-virtual-memory-overview.html).  
+/// [OpenCL 2.0 Shared Virtual Memory Overview](https://software.intel.com/content/www/us/en/develop/articles/opencl-20-shared-virtual-memory-overview.html).
 /// A PDF version is available here: [SVM Overview](https://github.com/kenba/opencl3/blob/main/docs/svmoverview.pdf).
 ///
 /// To summarise, a CL_DEVICE_SVM_COARSE_GRAIN_BUFFER requires the SVM to be *mapped*
@@ -210,6 +213,7 @@ impl<'a, T> Drop for SvmRawVec<'a, T> {
 /// ```no_run
 /// # use cl3::device::CL_DEVICE_TYPE_GPU;
 /// # use opencl3::command_queue::CommandQueue;
+/// # use opencl3::constants::*;
 /// # use opencl3::context::Context;
 /// # use opencl3::device::Device;
 /// # use opencl3::kernel::{ExecuteKernel, Kernel};
@@ -319,13 +323,13 @@ impl<'a, T> SvmVec<'a, T> {
         Ok(())
     }
 
-    /// Construct an empty SvmVec from a [Context].  
+    /// Construct an empty SvmVec from a [Context].
     /// The SvmVec has the lifetime of the [Context].
     ///
     /// # Panics
     ///
     /// The cl_device_svm_capabilities of the [Context] must include
-    /// CL_DEVICE_SVM_COARSE_GRAIN_BUFFER or CL_DEVICE_SVM_FINE_GRAIN_BUFFER.  
+    /// CL_DEVICE_SVM_COARSE_GRAIN_BUFFER or CL_DEVICE_SVM_FINE_GRAIN_BUFFER.
     /// The cl_device_svm_capabilities must *not* include CL_DEVICE_SVM_FINE_GRAIN_SYSTEM,
     /// a standard Rust `Vec!` should be used instead.
     #[must_use]
@@ -345,7 +349,7 @@ impl<'a, T> SvmVec<'a, T> {
     /// # Panics
     ///
     /// The cl_device_svm_capabilities of the [Context] must include
-    /// CL_DEVICE_SVM_COARSE_GRAIN_BUFFER or CL_DEVICE_SVM_FINE_GRAIN_BUFFER.  
+    /// CL_DEVICE_SVM_COARSE_GRAIN_BUFFER or CL_DEVICE_SVM_FINE_GRAIN_BUFFER.
     /// The cl_device_svm_capabilities must *not* include CL_DEVICE_SVM_FINE_GRAIN_SYSTEM,
     /// a standard Rust `Vec!` should be used instead.
     pub fn allocate(context: &'a Context, len: usize) -> Result<Self> {
@@ -363,7 +367,7 @@ impl<'a, T> SvmVec<'a, T> {
     /// # Panics
     ///
     /// The cl_device_svm_capabilities of the [Context] must include
-    /// CL_DEVICE_SVM_COARSE_GRAIN_BUFFER or CL_DEVICE_SVM_FINE_GRAIN_BUFFER.  
+    /// CL_DEVICE_SVM_COARSE_GRAIN_BUFFER or CL_DEVICE_SVM_FINE_GRAIN_BUFFER.
     /// The cl_device_svm_capabilities must *not* include CL_DEVICE_SVM_FINE_GRAIN_SYSTEM,
     /// a standard Rust `Vec!` should be used instead.
     pub fn with_capacity(context: &'a Context, capacity: usize) -> Result<Self> {
@@ -397,7 +401,7 @@ impl<'a, T> SvmVec<'a, T> {
         })
     }
 
-    /// Reserve vector capacity.  
+    /// Reserve vector capacity.
     /// returns an empty Result or the OpenCL error.
     pub fn reserve(&mut self, capacity: usize) -> Result<()> {
         self.buf.grow(capacity)
