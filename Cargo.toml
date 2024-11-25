@@ -71,7 +71,7 @@ default = ["CL_VERSION_1_1", "CL_VERSION_1_2", "CL_VERSION_2_0"]
 
 [dependencies]
 libc = "0.2"
-cl3 = {git = "https://github.com/passware/cl3.git", branch = "dynamic-runtime"}
+cl3 = {git = "https://github.com/passware/cl3.git", branch = "dynamic-runtime-stable"}
 serde = { version = "1.0", optional = true }
 
 [dev-dependencies]
